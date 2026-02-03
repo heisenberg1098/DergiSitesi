@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DergiX | Yönetim Paneli</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?
+family=Playfair+Display:wght@400;700;900&
+family=Montserrat:wght@300;400;600&
+family=Chewy&
+family=Pacifico&
+family=Sour+Gummy:ital,wght@0,100..900;1,100..900&
+family=Vibur&
+family=Mountains+of+Christmas:wght@400;700&
+display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --accent: #ff3e3e;
+            --bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .admin-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .nav-link.active {
+            background-color: var(--primary) !important;
+        }
+
+        .user-row img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .font-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .btn-edit {
+            color: #0d6efd;
+            cursor: pointer;
+        }
+
+        .btn-delete {
+            color: #dc3545;
+            cursor: pointer;
+        }
+
+        .icons {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?
+family=Playfair+Display&
+family=Merriweather&
+family=Lora&
+family=Montserrat&
+family=Inter&
+family=Source+Serif+4&
+family=Roboto+Slab&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand font-title fw-bold" href="index.html">Dergi<span>X</span> <small class="ms-2"
+                    style="font-size: 0.6rem; color: #ff3e3e;">PANEL</small></a>
+            <button class="btn btn-outline-light btn-sm" onclick="location.href='index.html'">Siteye Dön</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="nav flex-column nav-pills admin-card p-3 bg-white" id="v-pills-tab" role="tablist">
+                    <button class="nav-link active mb-2" data-bs-toggle="pill" data-bs-target="#postsTab">Yeni Yazı
+                        Ekle</button>
+                    <button class="nav-link mb-2" data-bs-toggle="pill" data-bs-target="#managePostsTab"
+                        onclick="loadManagePosts()">Yazıları Düzenle</button>
+                    <button class="nav-link mb-2" data-bs-toggle="pill" data-bs-target="#usersTab">Kullanıcılar</button>
+                    <button class="nav-link text-danger mt-4" onclick="handleLogout()">Çıkış Yap</button>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="tab-content">
+
+                    <div class="tab-pane fade show active" id="postsTab">
+                        <div class="card admin-card p-4">
+                            <h4 class="font-title fw-bold mb-4">Yeni Yazı Yayınla</h4>
+                            <input type="hidden" id="editPostId">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Yazı Başlığı</label>
+                                <input type="text" id="postTitle" class="form-control" placeholder="Başlık girin...">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Kategori</label>
+                                <select id="postCategory" class="form-select">
+                                    <option value="Kültür">Kültür</option>
+                                    <option value="Moda">Moda</option>
+                                    <option value="Siyaset">Siyaset</option>
+                                    <option value="Teknoloji">Teknoloji</option>
+                                    <option value="Siir">Şiir</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Yazı Fontu</label>
+                                <select id="postFont" class="form-select" onchange="updateFontPreview()">
+                                    <option value="'Playfair Display', serif">Playfair Display (Dergi)</option>
+                                    <option value="'Montserrat', sans-serif">Montserrat (Modern)</option>
+                                    <option value="'Chewy', cursive">Chewy (Eğlenceli)</option>
+                                    <option value="'Pacifico', cursive">Pacifico (El Yazısı)</option>
+                                    <option value="'Sour Gummy', cursive">Sour Gummy (Genç)</option>
+                                    <option value="'Vibur', cursive">Vibur (Şık)</option>
+                                    <option value="'Mountains of Christmas', cursive">Mountains of Christmas</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Canlı Önizleme</label>
+                                <div id="fontPreview" style="border:1px dashed #ccc;padding:15px;border-radius:10px;">
+                                    Bu yazı seçtiğiniz font ile görünecek.
+                                </div>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">İçerik</label>
+                                <textarea id="postContent" class="form-control fontPreview" rows="8"
+                                    placeholder="Yazı içeriği..."></textarea>
+                            </div>
+                            <button id="publishBtn" class="btn btn-dark w-100 py-2"
+                                onclick="publishPost()">Yayınla</button>
+                            <button id="cancelEditBtn" class="btn btn-outline-secondary w-100 py-2 mt-2 d-none"
+                                onclick="resetForm()">Düzenlemeyi İptal Et</button>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="managePostsTab">
+                        <div class="card admin-card p-4">
+                            <h4 class="font-title fw-bold mb-4">Mevcut Yazılar</h4>
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Başlık</th>
+                                            <th>Kategori</th>
+                                            <th>Tarih</th>
+                                            <th class="text-end">İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="managePostsTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="usersTab">
+                        <div class="card admin-card p-4">
+                            <h4 class="font-title fw-bold mb-4">Kullanıcı Listesi</h4>
+                            <div id="usersLoading" class="text-center p-3">Yükleniyor...</div>
+                            <div class="table-responsive d-none" id="usersContent">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Kullanıcı</th>
+                                            <th>Rol</th>
+                                            <th class="text-end">İşlem</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="userTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="statusModal" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content text-center p-4 border-0 shadow" style="border-radius: 20px;">
+                <div id="statusIcon" class="mb-2" style="font-size: 2rem;"></div>
+                <h5 id="statusTitle" class="fw-bold"></h5>
+                <p id="statusText" class="text-muted small"></p>
+                <button class="btn btn-dark w-100 rounded-pill" data-bs-dismiss="modal">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, getDocs, updateDoc, setDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL74Sp3iGmc4Yf_pW389adwGq_BbB7emk",
+            authDomain: "kerry-67253.firebaseapp.com",
+            projectId: "kerry-67253",
+            storageBucket: "kerry-67253.appspot.com",
+            messagingSenderId: "315985952723",
+            appId: "1:315985952723:web:05966ef1aebc630092f926"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- GÜVENLİK KONTROLÜ ---
+        onAuthStateChanged(auth, async user => {
+            if (!user) { window.location.href = "index.html"; return; }
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if (!snap.exists() || snap.data().role !== "admin") {
+                window.location.href = "index.html";
+            } else {
+                loadUsers();
+                loadManagePosts();
+            }
+        });
+
+        // --- YAZI PAYLAŞMA VEYA GÜNCELLEME ---
+        window.publishPost = async () => {
+            const title = document.getElementById('postTitle').value.trim();
+            const category = document.getElementById('postCategory').value;
+            const content = document.getElementById('postContent').value.trim();
+            const fontFamily = document.getElementById('postFont').value;
+            const editId = document.getElementById('editPostId').value;
+
+            if (!title || !content) {
+                alert("Lütfen başlık ve içerik girin!");
+                return;
+            }
+
+            try {
+                if (editId) {
+                    // Güncelleme Modu
+                    await updateDoc(doc(db, "posts", editId), {
+                        title, category, content,
+                        lastEdit: new Date().toLocaleDateString('tr-TR')
+                    });
+                    alert("Yazı güncellendi!");
+                } else {
+                    // Yeni Yayın Modu
+                    const newPostRef = doc(collection(db, "posts"));
+                    
+                    await setDoc(doc(collection(db, "posts")), {
+                        title,
+                        category,
+                        content,
+                        fontFamily,
+                        date: new Date().toLocaleDateString('tr-TR'),
+                        timestamp: Date.now()
+                    });
+
+                    alert("Yazı yayınlandı!");
+                }
+                resetForm();
+                loadManagePosts();
+            } catch (e) { alert("Hata: " + e.message); }
+        };
+
+        // --- YAZILARI LİSTELEME (DÜZENLEME İÇİN) ---
+        window.loadManagePosts = async () => {
+            const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+            const snap = await getDocs(q);
+            const tbody = document.getElementById('managePostsTableBody');
+            tbody.innerHTML = "";
+
+            snap.forEach(docSnap => {
+                const post = docSnap.data();
+                tbody.innerHTML += `
+                <tr>
+                    <td class="small fw-bold">${post.title.substring(0, 30)}...</td>
+                    <td><span class="badge bg-light text-dark border">${post.category}</span></td>
+                    <td class="text-muted small">${post.date}</td>
+                    <td class="text-end">
+                        <span class="btn-edit me-3 small fw-bold" onclick="editPost('${docSnap.id}')">Düzenle</span>
+                        <span class="btn-delete small fw-bold" onclick="deletePost('${docSnap.id}')">Sil</span>
+                    </td>
+                </tr>`;
+            });
+        };
+
+        // --- DÜZENLEME MODUNA GEÇ ---
+        window.editPost = async (id) => {
+            const snap = await getDoc(doc(db, "posts", id));
+            if (snap.exists()) {
+                const data = snap.data();
+                document.getElementById('editPostId').value = id;
+                document.getElementById('postTitle').value = data.title;
+                document.getElementById('postCategory').value = data.category;
+                document.getElementById('postContent').value = data.content;
+
+                document.getElementById('publishBtn').innerText = "Değişiklikleri Kaydet";
+                document.getElementById('cancelEditBtn').classList.remove('d-none');
+
+                // Sekme değiştir (Yeni Yazı Ekle sekmesine geri gönderir düzenleme için)
+                const triggerEl = document.querySelector('#v-pills-tab button[data-bs-target="#postsTab"]');
+                bootstrap.Tab.getInstance(triggerEl).show();
+            }
+        };
+
+        // --- YAZI SİLME ---
+        window.deletePost = async (id) => {
+            if (confirm("Bu yazıyı kalıcı olarak silmek istediğinize emin misiniz?")) {
+                await deleteDoc(doc(db, "posts", id));
+                loadManagePosts();
+            }
+        };
+
+        // --- FORMU SIFIRLA ---
+        window.resetForm = () => {
+            document.getElementById('editPostId').value = "";
+            document.getElementById('postTitle').value = "";
+            document.getElementById('postContent').value = "";
+            document.getElementById('publishBtn').innerText = "Yayınla";
+            document.getElementById('cancelEditBtn').classList.add('d-none');
+        };
+
+        // --- KULLANICI LİSTELEME & ROL DEĞİŞTİRME (MEVCUT KODLARIN) ---
+        async function loadUsers() {
+            const snap = await getDocs(collection(db, "users"));
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = "";
+            snap.forEach(d => {
+                const u = d.data();
+                tbody.innerHTML += `<tr>
+                <td><img src="${u.role === 'admin' ? 'resim/adminRes.png' : 'resim/reading.png'}" class="me-2 icons"> <span class="small fw-bold">${u.displayName}</span></td>
+                <td><span class="badge ${u.role === 'admin' ? 'bg-danger' : 'bg-secondary'}">${u.role}</span></td>
+                <td class="text-end"><button class="btn btn-sm btn-outline-dark" onclick="toggleRole('${d.id}','${u.role}')">Rol Değiştir</button></td>
+            </tr>`;
+            });
+            document.getElementById('usersLoading').classList.add('d-none');
+            document.getElementById('usersContent').classList.remove('d-none');
+        }
+        window.updateFontPreview = () => {
+            const font = document.getElementById('postFont').value;
+            const content = document.getElementById('postContent').value ||
+                "Bu yazı seçtiğiniz font ile görünecek.";
+
+            const preview = document.getElementById('fontPreview');
+            preview.style.fontFamily = font;
+            preview.innerText = content;
+        };
+
+
+        window.toggleRole = async (uid, r) => {
+            await updateDoc(doc(db, "users", uid), { role: r === "admin" ? "reader" : "admin" });
+            loadUsers();
+        };
+        updateFontPreview();
+
+        window.handleLogout = () => signOut(auth).then(() => location.href = "index.html");
+    </script>
+</body>
+
+</html>

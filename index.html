@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DergiX | Dijital Dergi</title>
+    <link rel="icon" type="image/png" href="resim/book.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?
+family=Playfair+Display:wght@400;700;900&
+family=Montserrat:wght@300;400;600&
+family=Chewy&
+family=Pacifico&
+family=Sour+Gummy:ital,wght@0,100..900;1,100..900&
+family=Vibur&
+family=Mountains+of+Christmas:wght@400;700&
+display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --accent: #ff3e3e;
+            --bg: #f8f9fa;
+            --text: #2d3436;
+            --font-title: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        [data-theme="earth"] {
+            --bg-color: #D4CDC2;
+            --black: #723A15;
+            --green: #723A15;
+            --card-bg: #e2ddd5;
+        }
+
+        /* 2. Tema: Neon Deniz (#093A43 - #00D282) */
+        [data-theme="neon"] {
+            --bg-color: #093A43;
+            --black: #ffffff;
+            --green: #00D282;
+            --card-bg: #0d4d59;
+        }
+
+        /* 3. Tema: Gece Moru (#3D002B - #CCD0E7) */
+        [data-theme="purple"] {
+            --bg-color: #3D002B;
+            --black: #CCD0E7;
+            --green: #CCD0E7;
+            --card-bg: #52013a;
+        }
+
+        /* 4. Tema: Gökyüzü (#000B66 - #00C1E3) */
+        [data-theme="ocean"] {
+            --bg-color: #000B66;
+            --black: #ffffff;
+            --green: #00C1E3;
+            --card-bg: #00128a;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(255, 255, 255, .95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-family: var(--font-title);
+            font-weight: 900;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .navbar-brand span {
+            color: var(--accent);
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-info {
+            text-align: right;
+            margin-right: 12px;
+            line-height: 1.2;
+            transition: all 0.3s ease;
+
+        }
+
+        [data-theme="neon"] #userNameDisplay,
+        [data-theme="ocean"] #userNameDisplay {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            /* Koyu temalarda parlatma */
+        }
+
+        #userNameDisplay {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+            color: var(--accent);
+
+            text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+            /* Hafif derinlik */
+            transition: all 0.3s ease;
+        }
+
+        #userRoleBadge {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Yazı Kartı Efektleri */
+        .post-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            border: none;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            transition: all 0.4s ease;
+        }
+
+        .post-card-body {
+            padding: 2rem;
+            transition: all 0.4s ease;
+        }
+
+        .read-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            backdrop-filter: blur(5px);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .read-overlay span {
+            font-weight: 700;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+
+        .post-card:hover .post-card-body {
+            filter: blur(2px);
+            transform: scale(0.98);
+        }
+
+        .post-card:hover .read-overlay {
+            opacity: 1;
+        }
+
+        .profile-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+        }
+
+        body {
+            padding-top: 70px;
+            /* Navbar boyutu kadar boşluk bırakır */
+            scroll-behavior: smooth;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            /* Sayfa içi kaydırmaları yumuşatır */
+        }
+
+        .hero-section {
+            min-height: 80vh;
+            /* Çok uzun içeriklerde sayfanın patlamasını engeller */
+            padding: 60px 0;
+            transition: all 0.5s ease-in-out;
+        }
+
+        #heroContent {
+            max-width: 900px;
+            /* Okunabilirliği artırmak için içeriği daraltalım */
+        }
+
+        /* Tam yazı modu için stil */
+        .full-content {
+            text-align: left;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: var(--font-title);
+            font-size: clamp(3rem, 10vw, 6rem);
+            margin: 20px 0;
+        }
+
+        /* AUTH MODAL */
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary);
+        }
+
+        .nav-link {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .anabasrenk {
+            color: var(--accent);
+            transition: color 0.4s ease;
+        }
+
+        /* NAVBAR İYİLEŞTİRMELERİ */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px) !important;
+            padding: 12px 0 !important;
+            height: 80px !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .navbar-brand {
+            font-size: 2rem !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        .nav-divider {
+            width: 1px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0 20px;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-divider {
+                display: inline-block;
+            }
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-container:hover {
+            background: rgba(0, 0, 0, 0.04);
+            transform: translateY(-1px);
+        }
+
+        .user-info {
+            text-align: right;
+            line-height: 1.3;
+            max-width: 200px;
+        }
+
+        #userNameDisplay {
+            font-weight: 700;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        #userRoleBadge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(255, 62, 62, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .profile-icon {
+            width: 44px !important;
+            height: 44px !important;
+            border: 3px solid var(--accent) !important;
+            box-shadow: 0 4px 12px rgba(255, 62, 62, 0.2);
+        }
+
+        .theme-btn,
+        .align-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: none;
+        }
+
+        .theme-btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .align-btn {
+            background: white;
+            color: var(--primary);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-group-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 15px;
+        }
+
+        .dropdown-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .user-info {
+                max-width: 120px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .user-info {
+                display: none;
+            }
+
+            .profile-container {
+                padding: 4px 8px;
+                background: transparent;
+                border: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body>
+
+    <nav class="navbar fixed-top shadow-sm">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <!-- SOL TARAF -->
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand"><i class="bi bi-journal-bookmark"></i><span
+                            id="logoText">Dergi</span><span>X</span></a>
+                    <div class="nav-divider"></div>
+                    <div class="d-none d-md-block">
+                        <small class="text-muted" style="font-size: 0.85rem;">Dijital Dünyanın Edebiyat
+                            Platformu</small>
+                    </div>
+                </div>
+
+                <!-- SAĞ TARAF -->
+                <div class="d-flex align-items-center">
+                    <div class="btn-group-nav">
+                        <button id="themeSwitcher" class="theme-btn" title="Tema Değiştir">
+                            <i class="bi bi-palette"></i>
+                        </button>
+                        <button onclick="toggleTextAlignment()" class="align-btn" title="Metin Hizalamasını Değiştir">
+                            <i class="bi bi-text-center"></i>
+                        </button>
+                    </div>
+
+                    <div class="dropdown">
+                        <div class="profile-container" data-bs-toggle="dropdown" id="profileTrigger">
+                            <div class="user-info d-none d-sm-block" id="userInfo">
+                                <span id="userNameDisplay">Misafir</span>
+                                <span id="userRoleBadge">Okuyucu</span>
+                            </div>
+                            <img id="navAvatar" src="resim/reading.png" class="profile-icon">
+                            <i class="bi bi-chevron-down text-muted ms-1"></i>
+                        </div>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                            <div id="loggedOutLinks">
+                                <li><a class="dropdown-item py-2" data-bs-toggle="modal" data-bs-target="#authModal">
+                                        <i class="bi bi-box-arrow-in-right"></i>Giriş Yap / Kayıt Ol</a></li>
+                            </div>
+                            <div id="loggedInLinks" style="display:none">
+                                <li><a id="adminPanelLink" class="dropdown-item fw-bold text-primary" href="admin.html"
+                                        style="display:none">
+                                        <i class="bi bi-shield-check"></i>Admin Paneli</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item py-2 text-danger" onclick="handleLogout()">
+                                        <i class="bi bi-box-arrow-right"></i>Güvenli Çıkış</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <section class="hero-section d-flex align-items-center justify-content-center text-center">
+        <div class="container" id="heroContent">
+            <h6 class="text-uppercase mb-3" style="letter-spacing: 3px; color: var(--accent);">Günün Yazısı</h6>
+            <h1 class="display-1 fw-bold main-title" id="heroTitle">Yükleniyor...</h1>
+            <p class="lead mt-4 mx-auto postContent" id="heroExcerpt" style="max-width: 700px;"></p>
+            <button id="heroBtn" class="btn btn-dark btn-lg mt-3 px-5 rounded-pill shadow d-none">Okumaya Başla</button>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <h3 class="font-title fw-bold mb-5 text-center">Son Paylaşılanlar</h3>
+            <div class="row g-4" id="postsContainer">
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="authModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4 shadow-lg">
+                <ul class="nav nav-pills justify-content-center mb-4" id="pills-tab">
+                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill"
+                            data-bs-target="#login">Giriş</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill"
+                            data-bs-target="#register">Kayıt</button></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="login" class="tab-pane fade show active">
+                        <input id="loginEmail" class="form-control mb-2" placeholder="E-posta veya Kullanıcı Adı">
+                        <input id="loginPass" type="password" class="form-control mb-3" placeholder="Şifre">
+                        <button class="btn btn-dark w-100 py-2 mb-3" onclick="handleLogin()">Giriş Yap</button>
+                        <div class="text-center mb-3 text-muted small">veya</div>
+                        <button
+                            class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center py-2"
+                            onclick="handleGoogleLogin()">
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"
+                                class="me-2"> Google ile Devam Et
+                        </button>
+                    </div>
+
+                    <div id="register" class="tab-pane fade">
+                        <input id="regName" class="form-control mb-3" placeholder="Ad Soyad">
+                        <input id="regEmail" class="form-control mb-3" placeholder="E-posta">
+                        <input id="regPass" type="password" class="form-control mb-3" placeholder="Şifre">
+                        <label class="small text-muted mb-1">Profil Resmi Seç (İsteğe bağlı)</label>
+                        <input id="regPhoto" type="file" class="form-control mb-4">
+                        <button class="btn btn-dark w-100 py-2" onclick="handleRegister()">Kayıt Ol</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg text-center p-4" style="border-radius: 20px;">
+                <div id="statusIcon" class="mb-3">
+                </div>
+                <h5 id="statusTitle" class="fw-bold mb-2">İşlem Durumu</h5>
+                <p id="statusText" class="text-muted small mb-4">Mesaj buraya gelecek.</p>
+                <button type="button" class="btn btn-dark w-100 py-2 rounded-pill"
+                    data-bs-dismiss="modal">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL74Sp3iGmc4Yf_pW389adwGq_BbB7emk",
+            authDomain: "kerry-67253.firebaseapp.com",
+            projectId: "kerry-67253",
+            storageBucket: "kerry-67253.firebasestorage.app",
+            messagingSenderId: "315985952723",
+            appId: "1:315985952723:web:05966ef1aebc630092f926"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        // REGISTER
+        window.handleRegister = async () => {
+            try {
+                const { user } = await createUserWithEmailAndPassword(auth, regEmail.value, regPass.value);
+                let photoURL = "https://via.placeholder.com/150";
+
+                if (regPhoto.files[0]) {
+                    const r = ref(storage, "profiles/" + user.uid);
+                    await uploadBytes(r, regPhoto.files[0]);
+                    photoURL = await getDownloadURL(r);
+                }
+
+                await setDoc(doc(db, "users", user.uid), {
+                    displayName: regName.value,
+                    email: user.email,
+                    photoURL,
+                    role: "reader"
+                });
+                location.reload();
+            } catch (e) { alert("Hata: " + e.message); }
+        };
+        // Yazı hizalama fonksiyonu
+        // Hizalama butonu icon güncelleme - Mevcut toggleTextAlignment fonksiyonunu BUNUNLA DEĞİŞTİR:
+        window.toggleTextAlignment = () => {
+            const excerpt = document.getElementById('heroExcerpt');
+            const alignBtn = document.querySelector('.align-btn i');
+
+            if (excerpt.classList.contains('text-center') || excerpt.style.textAlign === 'center' || !excerpt.style.textAlign) {
+                // SOLA YASLAMA MODU
+                excerpt.classList.remove('text-center', 'mx-auto');
+                excerpt.style.textAlign = 'left';
+                excerpt.style.display = 'inline-block';
+                excerpt.parentElement.style.textAlign = 'center';
+                localStorage.setItem('heroTextAlign', 'left');
+                alignBtn.className = 'bi bi-text-left';
+            } else {
+                // MERKEZE ALMA MODU
+                excerpt.style.textAlign = 'center';
+                excerpt.classList.add('mx-auto');
+                excerpt.style.display = 'block';
+                localStorage.setItem('heroTextAlign', 'center');
+                alignBtn.className = 'bi bi-text-center';
+            }
+        };
+
+        // DOM yüklendiğinde hizalama durumunu kontrol et - Mevcut kodun sonuna EKLE:
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedAlign = localStorage.getItem('heroTextAlign');
+            const alignBtnIcon = document.querySelector('.align-btn i');
+
+            if (savedAlign === 'left') {
+                alignBtnIcon.className = 'bi bi-text-left';
+            } else {
+                alignBtnIcon.className = 'bi bi-text-center';
+            }
+        });
+        // LOGIN
+        window.handleLogin = async () => {
+            const input = loginEmail.value; // HTML'deki input ID'si
+            const password = loginPass.value;
+            let targetEmail = input;
+
+            try {
+                // 1. Girdinin e-posta olup olmadığını kontrol et
+                const isEmail = input.includes("@");
+
+                if (!isEmail) {
+                    // 2. Eğer e-posta değilse, Firestore'da kullanıcı adını ara
+                    const q = query(collection(db, "users"), where("displayName", "==", input));
+                    const querySnapshot = await getDocs(q);
+
+                    if (querySnapshot.empty) {
+                        showStatus("Hata", "Bu kullanıcı adına sahip bir hesap bulunamadı.", "error");
+                        return;
+                    }
+
+                    // Kullanıcı bulundu, kayıtlı e-postasını al
+                    targetEmail = querySnapshot.docs[0].data().email;
+                }
+
+                // 3. Firebase Auth ile girişi gerçekleştir
+                await signInWithEmailAndPassword(auth, targetEmail, password);
+                location.reload();
+
+            } catch (e) {
+                showStatus("Giriş Başarısız", "Bilgileriniz hatalı görünüyor.", "error");
+            }
+        };
+        // GOOGLE LOGIN
+        window.handleGoogleLogin = async () => {
+            try {
+                const { user } = await signInWithPopup(auth, provider);
+                const refU = doc(db, "users", user.uid);
+                const snap = await getDoc(refU);
+
+                if (!snap.exists()) {
+                    await setDoc(refU, {
+                        displayName: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        role: "reader"
+                    });
+                }
+                location.reload();
+            } catch (e) { alert("Google Giriş Hatası: " + e.message); }
+        };
+
+        // LOGOUT
+        window.handleLogout = async () => {
+            await signOut(auth);
+            location.reload();
+        };
+
+        // AUTH STATE & UI UPDATE
+        onAuthStateChanged(auth, async user => {
+            const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+
+            if (user) {
+                document.getElementById('loggedOutLinks').style.display = "none";
+                document.getElementById('loggedInLinks').style.display = "block";
+                document.getElementById('userInfo').classList.remove('d-none');
+
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if (snap.exists()) {
+                    const data = snap.data();
+                    document.getElementById('userNameDisplay').innerText = data.displayName;
+                    document.getElementById('userRoleBadge').innerText = data.role === "admin" ? "Yönetici" : "Okuyucu";
+
+                    if (data.role === "admin") {
+                        document.getElementById('adminPanelLink').style.display = "block";
+                        // Admin ikonuna tıklandığında geçiş özelliği buraya eklenecek
+                    }
+                }
+            } else {
+                // Kullanıcı yoksa modalı 2 saniye sonra otomatik göster
+                setTimeout(() => { authModal.show(); }, 2000);
+            }
+        });
+        // ... (Firebase Importları ve Config aynı kalacak) ...
+
+        // --- ÖZEL MODAL FONKSİYONU (Alert Yerine) ---
+        window.showStatus = (title, message, type = 'error') => {
+            const titleEl = document.getElementById('statusTitle');
+            const textEl = document.getElementById('statusText');
+            const iconEl = document.getElementById('statusIcon');
+
+            titleEl.innerText = title;
+            textEl.innerText = message;
+
+            if (type === 'google-error') {
+                iconEl.innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="40">`;
+            } else if (type === 'error') {
+                iconEl.innerHTML = `<span style="font-size: 40px;">⚠️</span>`;
+            } else {
+                iconEl.innerHTML = `<span style="font-size: 40px;">✅</span>`;
+            }
+
+            const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+            statusModal.show();
+        };
+        import { collection, query, orderBy, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+        // onAuthStateChanged içinde veya dışında çağırabilirsin
+        loadPosts();
+        // --- GOOGLE GİRİŞ GÜNCELLEME ---
+        window.handleGoogleLogin = async () => {
+            try {
+                const { user } = await signInWithPopup(auth, provider);
+                // ... (Kayıt kontrolü aynı) ...
+                location.reload();
+            } catch (e) {
+                if (e.code === "auth/unauthorized-domain") {
+                    showStatus("Erişim Engellendi", "Bu domain (localhost) Firebase Console'da yetkilendirilmemiş. Lütfen Authorized Domains kısmına ekleyin.", "google-error");
+                } else {
+                    showStatus("Giriş Hatası", e.message, "google-error");
+                }
+            }
+        };
+
+        // Global değişken olarak yazıları tutalım ki geri dönerken kolay olsun
+        let allPosts = [];
+
+        async function loadPosts() {
+            const postsRef = collection(db, "posts");
+            const q = query(postsRef, orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
+
+            allPosts = [];
+            const postsContainer = document.getElementById('postsContainer');
+
+
+            postsContainer.innerHTML = "";
+
+            querySnapshot.forEach((docSnap) => {
+                const post = { id: docSnap.id, ...docSnap.data() };
+                allPosts.push(post);
+            });
+
+            // Sayfa ilk açıldığında en son yazıyı Günün Yazısı yap
+            showInHero(allPosts[0].id);
+
+            // Alttaki kartları oluştur
+            renderCards();
+        }
+
+        // Hero (Günün Yazısı) alanına içerik basan fonksiyon
+        window.showInHero = (postId) => {
+            const post = allPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroExcerpt = document.getElementById('heroExcerpt');
+            const heroContentArea = document.getElementById('heroContent');
+
+            // Başlığı ve içeriği güncelle
+            heroTitle.innerText = post.title;
+
+            // Eğer bu bir kart tıklamasıysa (Tam içeriği göster)
+            heroExcerpt.innerHTML = `
+<div class="full-content mt-4" style="font-family:${post.fontFamily || "'Montserrat', sans-serif"}">
+    ${post.content.replace(/\n/g, '<br>')}
+</div>`;
+
+            // Sayfanın en başına yumuşak geçiş yap
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // Kartları listeleyen fonksiyon
+        function renderCards() {
+            const postsContainer = document.getElementById('postsContainer');
+            postsContainer.innerHTML = "";
+
+            allPosts.forEach((post) => {
+                const cardHtml = `
+            <div class="col-md-4">
+                <div class="post-card">
+                    <div class="read-overlay" onclick="showInHero('${post.id}')">
+                        <span>Tamamını Oku</span>
+                    </div>
+                    <div class="post-card-body">
+                        <small class="text-danger fw-bold">${post.category}</small>
+                        <h4 class="font-title fw-bold mt-2"><span id="anabasrenk">${post.title}</span></h4>
+                        <p class="text-muted small">${post.content.substring(0, 100)}...</p>
+                    </div>
+                </div>
+            </div>
+        `;
+                postsContainer.innerHTML += cardHtml;
+            });
+        }
+
+        // ANA SAYFA / LOGO TIKLAMA (Her şeyi sıfırla)
+        document.querySelector('.navbar-brand').onclick = (e) => {
+            e.preventDefault();
+            showInHero(allPosts[0].id); // En son yazıyı geri getir
+        };
+        // --- DİĞER FONKSİYONLARDA ALERT YERİNE showStatus KULLANIMI ---
+        // Örnek:
+        window.handleLogin = async () => {
+            try {
+                await signInWithEmailAndPassword(auth, loginEmail.value, loginPass.value);
+                location.reload();
+            } catch (e) {
+                showStatus("Giriş Başarısız", "E-posta veya şifre hatalı.", "error");
+            }
+        };
+
+        // --- AUTH STATE & ADMIN YÖNLENDİRME ---
+        onAuthStateChanged(auth, async user => {
+            if (user) {
+                // ... (UI Güncelleme aynı) ...
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data.role === "admin") {
+                        const adminLink = document.getElementById('adminPanelLink');
+                        adminLink.style.display = "block";
+                        // Admin paneline tıklayınca direkt gitmesi için href ekledik ama manuel kontrol istersen:
+                        adminLink.onclick = () => { window.location.href = 'admin.html'; };
+                    }
+                }
+            }
+        });// 1. Renk Paletleri
+        const magazinThemes = [
+            { primary: "#1a1a1a", accent: "#ff3e3e", bg: "#f8f9fa", text: "#2d3436" }, // Varsayılan
+            { primary: "#723A15", accent: "#D4CDC2", bg: "#D4CDC2", text: "#723A15" }, // Toprak
+            { primary: "#00D282", accent: "#093A43", bg: "#093A43", text: "#00D282" }, // Neon Deniz
+            { primary: "#CC9EC8", accent: "#4D154C", bg: "#4D154C", text: "#CC9EC8" }, // Gece Moru
+            { primary: "#411038", accent: "#DAE6FF", bg: "#411038", text: "#DAE6FF" }, // Soft Mor
+            { primary: "#0ACFE9", accent: "#00164E", bg: "#00164E", text: "#0ACFE9" }  // Okyanus
+        ];
+
+        // 2. Temayı Uygulayan Fonksiyon
+        function runTheme(index) {
+            const theme = magazinThemes[index];
+            const root = document.documentElement;
+
+            // CSS Değişkenlerini Güncelle
+            root.style.setProperty('--primary', theme.primary);
+            root.style.setProperty('--accent', theme.accent);
+            root.style.setProperty('--bg', theme.bg);
+            root.style.setProperty('--text', theme.text);
+
+            // Görsel iyileştirmeler
+            document.body.style.backgroundColor = theme.bg;
+            document.body.style.color = theme.text;
+
+            const navbar = document.querySelector('.navbar');
+            if (navbar) {
+                navbar.style.backgroundColor = (index == 0) ? "rgba(255, 255, 255, .95)" : theme.primary;
+                navbar.style.transition = "all 0.4s ease";
+            }
+
+            localStorage.setItem('selectedThemeIndex', index);
+        }
+
+        // 3. Başlatıcı ve Olay Dinleyici (Hata Almamak İçin Kontrollü)
+        document.addEventListener('DOMContentLoaded', () => {
+            let savedIndex = parseInt(localStorage.getItem('selectedThemeIndex')) || 0;
+            const themeBtn = document.getElementById('themeSwitcher');
+
+            // Sayfa açıldığında temayı yükle
+            runTheme(savedIndex);
+
+            if (themeBtn) {
+                themeBtn.onclick = () => {
+                    savedIndex = (savedIndex + 1) % magazinThemes.length;
+                    runTheme(savedIndex);
+                };
+            }
+        });
+    </script>
+
+</body>
+
+</html>
